@@ -6,7 +6,7 @@
 
 #include "ZeroExtenderBase.generated.h"
 
-UCLASS(MinimalAPI, Abstract, NotBlueprintable, DefaultToInstanced, EditInlineNew, Const)
+UCLASS(MinimalAPI, Abstract, NotBlueprintable, DefaultToInstanced, EditInlineNew)
 class UZeroExtenderBase : public UObject
 {
 	GENERATED_BODY()
