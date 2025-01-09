@@ -28,11 +28,12 @@ public:
 	virtual void ZeroExtensionScope_RegisterExtendee(UObject* extendee, FGameplayTag channel = FGameplayTag::EmptyTag) = 0;
 	virtual void ZeroExtensionScope_UnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel = FGameplayTag::EmptyTag) = 0;
 
-	virtual bool ZeroExtensionScope_SupportsClose() const { return false; }
-	virtual void ZeroExtensionScope_Close();
-
 public:
 	bool TryClose();
+
+protected:
+	virtual bool ZeroExtensionScope_SupportsClose() const { return false; }
+	virtual void ZeroExtensionScope_Close();
 
 };
 

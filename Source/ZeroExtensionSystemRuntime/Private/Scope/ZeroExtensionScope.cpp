@@ -10,14 +10,6 @@ TScriptInterface<IZeroExtensionScope> IZeroExtensionScope::Create(UObject* outer
 	return NewObject<UZeroExtensionScopeImpl>(outer, name);
 }
 
-void IZeroExtensionScope::ZeroExtensionScope_Close()
-{
-	if (!ensure(ZeroExtensionScope_SupportsClose()))
-	{
-		UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("Can't close this extension scope (%s) explicitly!"), *_getUObject()->GetName());
-	}
-}
-
 bool IZeroExtensionScope::TryClose()
 {
 	if (ZeroExtensionScope_SupportsClose())
@@ -27,6 +19,14 @@ bool IZeroExtensionScope::TryClose()
 	}
 
 	return false;
+}
+
+void IZeroExtensionScope::ZeroExtensionScope_Close()
+{
+	if (!ensure(ZeroExtensionScope_SupportsClose()))
+	{
+		UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("Can't close this extension scope (%s) explicitly!"), *_getUObject()->GetName());
+	}
 }
 
 
