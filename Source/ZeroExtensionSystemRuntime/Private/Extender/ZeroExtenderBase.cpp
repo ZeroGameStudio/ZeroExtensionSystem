@@ -1,6 +1,5 @@
 ﻿// Copyright Zero Games. All Rights Reserved.
 
-
 #include "Extender/ZeroExtenderBase.h"
 
 bool UZeroExtenderBase::TryExtend(UObject* extendee)
@@ -18,16 +17,16 @@ bool UZeroExtenderBase::TryExtend(UObject* extendee)
 	return Extend(extendee);
 }
 
-bool UZeroExtenderBase::TryRevert(UObject* extendee, bool pendingKill)
+bool UZeroExtenderBase::TryRevert(UObject* extendee, bool destroying)
 {
 	if (!extendee)
 	{
 		return false;
 	}
 
-	pendingKill |= TreatsGarbageAsPendingKill(extendee) && extendee->HasAllFlags(RF_MirroredGarbage);
+	destroying |= TreatsGarbageAsPendingKill(extendee) && extendee->HasAllFlags(RF_MirroredGarbage);
 
-	if (IsTrivialRevert(extendee, pendingKill))
+	if (IsTrivialRevert(extendee, destroying))
 	{
 		return true;
 	}
@@ -37,7 +36,7 @@ bool UZeroExtenderBase::TryRevert(UObject* extendee, bool pendingKill)
 		return false;
 	}
 
-	return Revert(extendee, pendingKill);
+	return Revert(extendee, destroying);
 }
 
 

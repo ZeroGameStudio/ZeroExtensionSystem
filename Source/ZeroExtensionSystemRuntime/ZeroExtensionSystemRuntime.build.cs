@@ -27,7 +27,6 @@ public class ZeroExtensionSystemRuntime : ModuleRules
 			new string[]
 			{
 				"Core",
-				"GameplayTags",
 			}
 		);
 		
@@ -36,6 +35,7 @@ public class ZeroExtensionSystemRuntime : ModuleRules
 			new string[]
 			{
 				"CoreUObject",
+				"GameplayTags",
 				"Engine",
 			}
 		);
