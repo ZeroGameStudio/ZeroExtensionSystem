@@ -41,6 +41,12 @@ void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterfa
 		return;
 	}
 
+	if (!ensure(!extender->bRegistered))
+	{
+		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZExtensionScopeImpl::ExtensionScope_RegisterExtender (%s)] Can't register extender [%s] because it is already registered to another scope!"), *GetName(), *extender->GetPathName());
+		return;
+	}
+
 	if (!channel.IsValid())
 	{
 		channel = ZES::TAG_ExtensionChannel_Default;
@@ -64,6 +70,12 @@ void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBaseInter
 	
 	if (!extender->GetExtensionKey().IsValid())
 	{
+		return;
+	}
+
+	if (!ensure(extender->OwnerScope == this))
+	{
+		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZExtensionScopeImpl::ExtensionScope_UnregisterExtender (%s)] Can't unregister extender [%s] because it isn't registered to this scope!"), *GetName(), *extender->GetPathName());
 		return;
 	}
 
@@ -148,6 +160,9 @@ void UZExtensionScopeImpl::InternalRegisterExtender(UZExtenderBaseInterface* ext
 		return;
 	}
 
+	extender->bRegistered = true;
+	extender->OwnerScope = this;
+
 	channel.ForeachExtendee([extender](UObject* extendee)
 	{
 		extender->TryExtend(extendee);
@@ -162,6 +177,8 @@ void UZExtensionScopeImpl::InternalUnregisterExtender(UZExtenderBaseInterface* e
 		return;
 	}
 
+	extender->OwnerScope = nullptr;
+	
 	channel.ForeachExtendee([extender](UObject* extendee)
 	{
 		extender->TryRevert(extendee, false);

@@ -6,10 +6,14 @@
 
 #include "ZExtenderBaseInterface.generated.h"
 
-UCLASS(MinimalAPI, Abstract, NotBlueprintable, DefaultToInstanced, EditInlineNew)
+class IZExtensionScope;
+
+UCLASS(MinimalAPI, Abstract, DefaultToInstanced, EditInlineNew)
 class UZExtenderBaseInterface : public UObject
 {
 	GENERATED_BODY()
+
+	friend class UZExtensionScopeImpl;
 
 public:
 	bool TryExtend(UObject* extendee);
@@ -27,6 +31,13 @@ protected:
 
 private:
 	static bool IsValidExtendee(const UObject* extendee);
+
+private:
+	UPROPERTY(VisibleAnywhere)
+	TScriptInterface<IZExtensionScope> OwnerScope;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bRegistered;
 	
 };
 

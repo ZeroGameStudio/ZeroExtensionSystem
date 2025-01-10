@@ -12,7 +12,7 @@ enum class EZExtender_ActorComponentPostProcessorRunningGroup : uint8
 	PostRegisterToWorld,
 };
 
-UCLASS(MinimalAPI, Abstract, NotBlueprintable, DefaultToInstanced, EditInlineNew, Const)
+UCLASS(MinimalAPI, Abstract, DefaultToInstanced, EditInlineNew, Const)
 class UZExtender_ActorComponentPostProcessorBaseInterface : public UObject
 {
 	GENERATED_BODY()
