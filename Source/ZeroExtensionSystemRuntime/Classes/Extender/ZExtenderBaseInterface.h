@@ -22,8 +22,11 @@ protected:
 	virtual bool Revert(UObject* extendee, bool destroying) { PURE_VIRTUAL(UZeroExtenderBase::Revert); return false; }
 
 	virtual bool CanExtend(UObject* extendee) const { PURE_VIRTUAL(UZeroExtenderBase::CanExtend); return false; }
-	virtual bool IsTrivialRevert(UObject* extendee, bool destroying) const { return false; }
-	virtual bool TreatsGarbageAsPendingKill(UObject* extendee) const { return true; }
+	ZEROEXTENSIONSYSTEMRUNTIME_API virtual bool IsTrivialRevert(UObject* extendee, bool destroying) const { return false; }
+	ZEROEXTENSIONSYSTEMRUNTIME_API virtual bool TreatsGarbageAsPendingKill(UObject* extendee) const { return true; }
+
+private:
+	static bool IsValidExtendee(const UObject* extendee);
 	
 };
 

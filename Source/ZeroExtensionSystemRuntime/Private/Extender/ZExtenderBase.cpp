@@ -7,7 +7,7 @@
 bool UZExtenderBase::CanExtend(UObject* extendee) const
 {
 	// You don't want to extend all objects indiscriminately, so return false if there is no filter.
-	return Filter && Filter->Passes(extendee);
+	return Filter && Filter->Passes(extendee) && InternalCanExtend(extendee);
 }
 
 

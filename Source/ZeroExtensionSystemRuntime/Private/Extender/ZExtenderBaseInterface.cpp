@@ -4,7 +4,7 @@
 
 bool UZExtenderBaseInterface::TryExtend(UObject* extendee)
 {
-	if (!extendee)
+	if (!IsValidExtendee(extendee))
 	{
 		return false;
 	}
@@ -24,7 +24,7 @@ bool UZExtenderBaseInterface::TryRevert(UObject* extendee, bool destroying)
 		return false;
 	}
 
-	destroying |= TreatsGarbageAsPendingKill(extendee) && extendee->HasAllFlags(RF_MirroredGarbage);
+	destroying |= TreatsGarbageAsPendingKill(extendee) && !IsValidExtendee(extendee);
 
 	if (IsTrivialRevert(extendee, destroying))
 	{
@@ -33,6 +33,11 @@ bool UZExtenderBaseInterface::TryRevert(UObject* extendee, bool destroying)
 
 	// Extender itself should know whether it extended this extendee so we don't check CanExtend() again.
 	return Revert(extendee, destroying);
+}
+
+bool UZExtenderBaseInterface::IsValidExtendee(const UObject* extendee)
+{
+	return extendee && !extendee->IsUnreachable() && !extendee->HasAnyFlags(RF_MirroredGarbage);
 }
 
 

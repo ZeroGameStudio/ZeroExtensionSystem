@@ -16,6 +16,9 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderBase : public UZExtenderBaseInter
 public:
 	virtual FGameplayTag GetExtensionKey() const override final { return ExtensionKey; }
 
+protected:
+	virtual bool InternalCanExtend(UObject* extendee) const { return true; }
+	
 private:
 	virtual bool CanExtend(UObject* extendee) const override final;
 
