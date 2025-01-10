@@ -31,11 +31,7 @@ bool UZExtenderBaseInterface::TryRevert(UObject* extendee, bool destroying)
 		return true;
 	}
 
-	if (!CanExtend(extendee))
-	{
-		return false;
-	}
-
+	// Extender itself should know whether it extended this extendee so we don't check CanExtend() again.
 	return Revert(extendee, destroying);
 }
 

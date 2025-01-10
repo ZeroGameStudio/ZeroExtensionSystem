@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ZExtenderBaseInterface.h"
+
 #include "ZExtenderBase.generated.h"
 
 class UZExtendeeFilterBaseInterface;
