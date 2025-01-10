@@ -4,6 +4,9 @@
 
 #include "NativeGameplayTags.h"
 
-ZEROEXTENSIONSYSTEMRUNTIME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_ExtensionChannel_Default);
+namespace ZES
+{
+	ZEROEXTENSIONSYSTEMRUNTIME_API UE_DECLARE_GAMEPLAY_TAG_EXTERN(TAG_ExtensionChannel_Default);
+}
 
 

@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "ZFilterableExtenderBase.h"
+#include "ZExtenderBase.h"
 
 #include "ZScriptableExtenderBase.generated.h"
 
 UCLASS(Abstract, Blueprintable)
-class ZEROEXTENSIONSYSTEMRUNTIME_API UZScriptableExtenderBase final : public UZFilterableExtenderBase
+class ZEROEXTENSIONSYSTEMRUNTIME_API UZScriptableExtenderBase final : public UZExtenderBase
 {
 	GENERATED_BODY()
 

@@ -2,7 +2,7 @@
 
 #include "Scope/ZDeferredExtensionScope.h"
 
-#include "Extender/ZExtenderBase.h"
+#include "Extender/ZExtenderBaseInterface.h"
 #include "Scope/ZExtensionScope.h"
 
 ZES::FZDeferredExtensionScope::~FZDeferredExtensionScope()
@@ -10,11 +10,11 @@ ZES::FZDeferredExtensionScope::~FZDeferredExtensionScope()
 	Close();
 }
 
-void ZES::FZDeferredExtensionScope::RegisterExtender(UZExtenderBase* extender, FGameplayTag channel)
+void ZES::FZDeferredExtensionScope::RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
 {
 	if (State == EZState::Unopened)
 	{
-		DeferredExtenders.AddUnique({ TStrongObjectPtr<UZExtenderBase> { extender }, channel });
+		DeferredExtenders.AddUnique({ TStrongObjectPtr<UZExtenderBaseInterface> { extender }, channel });
 	}
 	else if (InnerScope)
 	{
@@ -22,11 +22,11 @@ void ZES::FZDeferredExtensionScope::RegisterExtender(UZExtenderBase* extender, F
 	}
 }
 
-void ZES::FZDeferredExtensionScope::UnregisterExtender(UZExtenderBase* extender, FGameplayTag channel)
+void ZES::FZDeferredExtensionScope::UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
 {
 	if (State == EZState::Unopened)
 	{
-		DeferredExtenders.Remove({ TStrongObjectPtr<UZExtenderBase> { extender }, channel });
+		DeferredExtenders.Remove({ TStrongObjectPtr<UZExtenderBaseInterface> { extender }, channel });
 	}
 	else if (InnerScope)
 	{
@@ -71,7 +71,7 @@ void ZES::FZDeferredExtensionScope::Open(IZExtensionScope* innerScope)
 
 	for (const auto& deferredExtender : DeferredExtenders)
 	{
-		if (UZExtenderBase* extender = deferredExtender.Extender.Get())
+		if (UZExtenderBaseInterface* extender = deferredExtender.Extender.Get())
 		{
 			InternalRegisterExtender(extender, deferredExtender.Channel);
 		}
@@ -105,13 +105,13 @@ void ZES::FZDeferredExtensionScope::Close()
 	InnerScope = nullptr;
 }
 
-void ZES::FZDeferredExtensionScope::InternalRegisterExtender(UZExtenderBase* extender, FGameplayTag channel)
+void ZES::FZDeferredExtensionScope::InternalRegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
 {
 	IZExtensionScope* scope = CastChecked<IZExtensionScope>(InnerScope.Get());
 	scope->ExtensionScope_RegisterExtender(extender, channel);
 }
 
-void ZES::FZDeferredExtensionScope::InternalUnregisterExtender(UZExtenderBase* extender, FGameplayTag channel)
+void ZES::FZDeferredExtensionScope::InternalUnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
 {
 	IZExtensionScope* scope = CastChecked<IZExtensionScope>(InnerScope.Get());
 	scope->ExtensionScope_UnregisterExtender(extender, channel);

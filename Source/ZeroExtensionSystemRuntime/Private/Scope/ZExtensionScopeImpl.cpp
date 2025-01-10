@@ -4,7 +4,7 @@
 
 #include "ZDefaultExtensionChannels.h"
 #include "ZeroExtensionSystemRuntimeLogChannels.h"
-#include "Extender/ZExtenderBase.h"
+#include "Extender/ZExtenderBaseInterface.h"
 
 void UZExtensionScopeImpl::AddReferencedObjects(UObject* self, FReferenceCollector& collector)
 {
@@ -23,7 +23,7 @@ void UZExtensionScopeImpl::BeginDestroy()
 	UObject::BeginDestroy();
 }
 
-void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBase* extender, FGameplayTag channel)
+void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
 {
 	if (bClosed)
 	{
@@ -43,13 +43,13 @@ void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBase* exten
 
 	if (!channel.IsValid())
 	{
-		channel = TAG_ExtensionChannel_Default;
+		channel = ZES::TAG_ExtensionChannel_Default;
 	}
 
 	InternalRegisterExtender(extender, channel);
 }
 
-void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBase* extender, FGameplayTag channel)
+void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
 {
 	if (bClosed)
 	{
@@ -69,7 +69,7 @@ void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBase* ext
 
 	if (!channel.IsValid())
 	{
-		channel = TAG_ExtensionChannel_Default;
+		channel = ZES::TAG_ExtensionChannel_Default;
 	}
 
 	InternalUnregisterExtender(extender, channel);
@@ -90,7 +90,7 @@ void UZExtensionScopeImpl::ExtensionScope_RegisterExtendee(UObject* extendee, FG
 
 	if (!channel.IsValid())
 	{
-		channel = TAG_ExtensionChannel_Default;
+		channel = ZES::TAG_ExtensionChannel_Default;
 	}
 
 	InternalRegisterExtendee(extendee, channel);
@@ -111,7 +111,7 @@ void UZExtensionScopeImpl::ExtensionScope_UnregisterExtendee(UObject* extendee, 
 
 	if (!channel.IsValid())
 	{
-		channel = TAG_ExtensionChannel_Default;
+		channel = ZES::TAG_ExtensionChannel_Default;
 	}
 
 	InternalUnregisterExtendee(extendee, channel, destroying);
@@ -129,7 +129,7 @@ void UZExtensionScopeImpl::ExtensionScope_Close()
 	for (auto& pair : Registry)
 	{
 		FZChannel& channel = *pair.Value;
-		channel.ForeachExtender([&channel](UZExtenderBase* extender)
+		channel.ForeachExtender([&channel](UZExtenderBaseInterface* extender)
 		{
 			channel.ForeachExtendee([extender](UObject* extendee)
 			{
@@ -140,7 +140,7 @@ void UZExtensionScopeImpl::ExtensionScope_Close()
 	}
 }
 
-void UZExtensionScopeImpl::InternalRegisterExtender(UZExtenderBase* extender, FGameplayTag channelId)
+void UZExtensionScopeImpl::InternalRegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channelId)
 {
 	FZChannel& channel = GetChannel(channelId);
 	if (!channel.AddExtender(extender))
@@ -154,7 +154,7 @@ void UZExtensionScopeImpl::InternalRegisterExtender(UZExtenderBase* extender, FG
 	});
 }
 
-void UZExtensionScopeImpl::InternalUnregisterExtender(UZExtenderBase* extender, FGameplayTag channelId)
+void UZExtensionScopeImpl::InternalUnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channelId)
 {
 	FZChannel& channel = GetChannel(channelId);
 	if (!channel.RemoveExtender(extender))
@@ -176,7 +176,7 @@ void UZExtensionScopeImpl::InternalRegisterExtendee(UObject* extendee, FGameplay
 		return;
 	}
 
-	channel.ForeachExtender([extendee](UZExtenderBase* extender)
+	channel.ForeachExtender([extendee](UZExtenderBaseInterface* extender)
 	{
 		extender->TryExtend(extendee);
 	});
@@ -190,7 +190,7 @@ void UZExtensionScopeImpl::InternalUnregisterExtendee(UObject* extendee, FGamepl
 		return;
 	}
 
-	channel.ForeachExtender([extendee, destroying](UZExtenderBase* extender)
+	channel.ForeachExtender([extendee, destroying](UZExtenderBaseInterface* extender)
 	{
 		extender->TryRevert(extendee, destroying);
 	});
@@ -208,7 +208,7 @@ UZExtensionScopeImpl::FZChannel& UZExtensionScopeImpl::GetChannel(FGameplayTag i
 	return *channel;
 }
 
-bool UZExtensionScopeImpl::FZChannel::AddExtender(UZExtenderBase* extender)
+bool UZExtensionScopeImpl::FZChannel::AddExtender(UZExtenderBaseInterface* extender)
 {
 	FGameplayTag extensionKey = extender->GetExtensionKey();
 	if (ensure(!ExtenderLookup.Contains(extensionKey)))
@@ -221,7 +221,7 @@ bool UZExtensionScopeImpl::FZChannel::AddExtender(UZExtenderBase* extender)
 	return false;
 }
 
-bool UZExtensionScopeImpl::FZChannel::RemoveExtender(UZExtenderBase* extender)
+bool UZExtensionScopeImpl::FZChannel::RemoveExtender(UZExtenderBaseInterface* extender)
 {
 	if (!ensure(!bExtendersLocked))
 	{
@@ -230,13 +230,13 @@ bool UZExtensionScopeImpl::FZChannel::RemoveExtender(UZExtenderBase* extender)
 	}
 
 	FGameplayTag extensionKey = extender->GetExtensionKey();
-	TWeakObjectPtr<UZExtenderBase>* weakExtender = ExtenderLookup.Find(extensionKey);
+	TWeakObjectPtr<UZExtenderBaseInterface>* weakExtender = ExtenderLookup.Find(extensionKey);
 	if (!weakExtender)
 	{
 		return false;
 	}
 
-	UZExtenderBase* existingExtender = weakExtender->Get();
+	UZExtenderBaseInterface* existingExtender = weakExtender->Get();
 	if (!ensure(existingExtender == extender))
 	{
 		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZeroExtensionScopeImpl::FZChannel::RemoveExtender (%s)] Duplicated extension key [%s]"), *Name.ToString(), *extensionKey.ToString());
@@ -281,7 +281,7 @@ bool UZExtensionScopeImpl::FZChannel::RemoveExtendee(UObject* extendee)
 	return true;
 }
 
-void UZExtensionScopeImpl::FZChannel::ForeachExtender(TFunctionRef<void(UZExtenderBase*)> action)
+void UZExtensionScopeImpl::FZChannel::ForeachExtender(TFunctionRef<void(UZExtenderBaseInterface*)> action)
 {
 	TGuardValue guardedLock { bExtendersLocked, true };
 	for (const auto& extender : Extenders)

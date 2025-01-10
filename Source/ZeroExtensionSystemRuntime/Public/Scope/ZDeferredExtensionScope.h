@@ -4,7 +4,7 @@
 
 #include "GameplayTagContainer.h"
 
-class UZExtenderBase;
+class UZExtenderBaseInterface;
 class IZExtensionScope;
 
 namespace ZES
@@ -14,8 +14,8 @@ namespace ZES
 		
 		~FZDeferredExtensionScope();
 		
-		void RegisterExtender(UZExtenderBase* extender, FGameplayTag channel = FGameplayTag::EmptyTag);
-		void UnregisterExtender(UZExtenderBase* extender, FGameplayTag channel = FGameplayTag::EmptyTag);
+		void RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag);
+		void UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag);
 		
 		void RegisterExtendee(UObject* extendee, FGameplayTag channel = FGameplayTag::EmptyTag);
 		void UnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel = FGameplayTag::EmptyTag);
@@ -25,8 +25,8 @@ namespace ZES
 		void Close();
 
 	private:
-		void InternalRegisterExtender(UZExtenderBase* extender, FGameplayTag channel);
-		void InternalUnregisterExtender(UZExtenderBase* extender, FGameplayTag channel);
+		void InternalRegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel);
+		void InternalUnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel);
 		
 		void InternalRegisterExtendee(UObject* extendee, FGameplayTag channel);
 		void InternalUnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel);
@@ -41,7 +41,7 @@ namespace ZES
 
 		struct FZDeferredExtenderRegistration
 		{
-			TStrongObjectPtr<UZExtenderBase> Extender;
+			TStrongObjectPtr<UZExtenderBaseInterface> Extender;
 			FGameplayTag Channel;
 			friend bool operator==(const FZDeferredExtenderRegistration& lhs, const FZDeferredExtenderRegistration& rhs)
 			{

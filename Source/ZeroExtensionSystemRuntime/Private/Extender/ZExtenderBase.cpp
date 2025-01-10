@@ -2,41 +2,12 @@
 
 #include "Extender/ZExtenderBase.h"
 
-bool UZExtenderBase::TryExtend(UObject* extendee)
+#include "Filter/ZExtendeeFilterBaseInterface.h"
+
+bool UZExtenderBase::CanExtend(UObject* extendee) const
 {
-	if (!extendee)
-	{
-		return false;
-	}
-
-	if (!CanExtend(extendee))
-	{
-		return false;
-	}
-
-	return Extend(extendee);
-}
-
-bool UZExtenderBase::TryRevert(UObject* extendee, bool destroying)
-{
-	if (!extendee)
-	{
-		return false;
-	}
-
-	destroying |= TreatsGarbageAsPendingKill(extendee) && extendee->HasAllFlags(RF_MirroredGarbage);
-
-	if (IsTrivialRevert(extendee, destroying))
-	{
-		return true;
-	}
-
-	if (!CanExtend(extendee))
-	{
-		return false;
-	}
-
-	return Revert(extendee, destroying);
+	// You don't want to extend all objects indiscriminately, so return false if there is no filter.
+	return Filter && Filter->Passes(extendee);
 }
 
 

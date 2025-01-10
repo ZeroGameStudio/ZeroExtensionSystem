@@ -17,8 +17,8 @@ public:
 
 public:
 	// IZeroExtensionScope
-	virtual void ExtensionScope_RegisterExtender(UZExtenderBase* extender, FGameplayTag channel = FGameplayTag::EmptyTag) override;
-	virtual void ExtensionScope_UnregisterExtender(UZExtenderBase* extender, FGameplayTag channel = FGameplayTag::EmptyTag) override;
+	virtual void ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag) override;
+	virtual void ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag) override;
 	virtual void ExtensionScope_RegisterExtendee(UObject* extendee, FGameplayTag channel = FGameplayTag::EmptyTag) override;
 	virtual void ExtensionScope_UnregisterExtendee(UObject* extendee, bool pendingKill, FGameplayTag channel = FGameplayTag::EmptyTag) override;
 
