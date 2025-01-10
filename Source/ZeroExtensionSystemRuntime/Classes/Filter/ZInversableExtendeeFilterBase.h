@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "ZeroExtendeeFilterBase.h"
+#include "ZExtendeeFilterBase.h"
 #include "ZInversableExtendeeFilterBase.generated.h"
 
 UCLASS(Abstract)
-class ZEROEXTENSIONSYSTEMRUNTIME_API UZInversableExtendeeFilterBase : public UZeroExtendeeFilterBase
+class ZEROEXTENSIONSYSTEMRUNTIME_API UZInversableExtendeeFilterBase : public UZExtendeeFilterBase
 {
 	GENERATED_BODY()
 

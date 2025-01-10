@@ -2,7 +2,7 @@
 
 #include "Extender/ZFilterableExtenderBase.h"
 
-#include "Filter/ZeroExtendeeFilterBase.h"
+#include "Filter/ZExtendeeFilterBase.h"
 
 bool UZFilterableExtenderBase::CanExtend(UObject* extendee) const
 {

@@ -2,10 +2,10 @@
 
 #pragma once
 
-#include "ZeroExtendeeFilterBase.generated.h"
+#include "ZExtendeeFilterBase.generated.h"
 
 UCLASS(Abstract, NotBlueprintable, DefaultToInstanced, EditInlineNew, Const)
-class ZEROEXTENSIONSYSTEMRUNTIME_API UZeroExtendeeFilterBase : public UObject
+class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtendeeFilterBase : public UObject
 {
 	GENERATED_BODY()
 

@@ -2,13 +2,13 @@
 
 #pragma once
 
-#include "ZeroExtenderBase.h"
+#include "ZExtenderBase.h"
 #include "ZFilterableExtenderBase.generated.h"
 
-class UZeroExtendeeFilterBase;
+class UZExtendeeFilterBase;
 
 UCLASS(Abstract)
-class ZEROEXTENSIONSYSTEMRUNTIME_API UZFilterableExtenderBase : public UZeroExtenderBase
+class ZEROEXTENSIONSYSTEMRUNTIME_API UZFilterableExtenderBase : public UZExtenderBase
 {
 	GENERATED_BODY()
 
@@ -23,7 +23,7 @@ private:
 	FGameplayTag ExtensionKey;
 	
 	UPROPERTY(EditAnywhere, Category = "Filter")
-	TObjectPtr<UZeroExtendeeFilterBase> Filter;
+	TObjectPtr<UZExtendeeFilterBase> Filter;
 	
 };
 

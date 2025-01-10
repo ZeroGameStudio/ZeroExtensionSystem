@@ -4,10 +4,10 @@
 
 #include "GameplayTagContainer.h"
 
-#include "ZeroExtenderBase.generated.h"
+#include "ZExtenderBase.generated.h"
 
 UCLASS(MinimalAPI, Abstract, NotBlueprintable, DefaultToInstanced, EditInlineNew)
-class UZeroExtenderBase : public UObject
+class UZExtenderBase : public UObject
 {
 	GENERATED_BODY()
 

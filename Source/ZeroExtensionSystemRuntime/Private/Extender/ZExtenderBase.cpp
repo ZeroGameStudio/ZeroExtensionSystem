@@ -1,8 +1,8 @@
 ﻿// Copyright Zero Games. All Rights Reserved.
 
-#include "Extender/ZeroExtenderBase.h"
+#include "Extender/ZExtenderBase.h"
 
-bool UZeroExtenderBase::TryExtend(UObject* extendee)
+bool UZExtenderBase::TryExtend(UObject* extendee)
 {
 	if (!extendee)
 	{
@@ -17,7 +17,7 @@ bool UZeroExtenderBase::TryExtend(UObject* extendee)
 	return Extend(extendee);
 }
 
-bool UZeroExtenderBase::TryRevert(UObject* extendee, bool destroying)
+bool UZExtenderBase::TryRevert(UObject* extendee, bool destroying)
 {
 	if (!extendee)
 	{
