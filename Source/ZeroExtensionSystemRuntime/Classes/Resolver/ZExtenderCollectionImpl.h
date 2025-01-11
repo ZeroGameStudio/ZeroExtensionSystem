@@ -12,10 +12,11 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderCollectionImpl final : public UOb
 	GENERATED_BODY()
 
 public:
-	virtual void Initialize(const TArray<UZExtenderBaseInterface*>& extenders) override;
-
 	virtual void Register(IZExtensionScope* scope) override;
 	virtual void Unregister() override;
+	
+public:
+	void Initialize(const TArray<UZExtenderBaseInterface*>& extenders);
 
 private:
 	UPROPERTY(VisibleAnywhere)

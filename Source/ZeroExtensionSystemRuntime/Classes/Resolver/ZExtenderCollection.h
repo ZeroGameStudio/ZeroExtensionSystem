@@ -18,8 +18,6 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API IZExtenderCollection : public IInterface
 	GENERATED_BODY()
 
 public:
-	virtual void Initialize(const TArray<UZExtenderBaseInterface*>& extenders) = 0;
-
 	virtual void Register(IZExtensionScope* scope) = 0;
 	virtual void Unregister() = 0;
 	

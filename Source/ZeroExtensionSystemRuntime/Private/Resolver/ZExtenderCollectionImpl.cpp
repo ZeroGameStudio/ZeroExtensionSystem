@@ -7,47 +7,6 @@
 #include "Extender/ZExtenderBaseInterface.h"
 #include "Scope/ZExtensionScope.h"
 
-void UZExtenderCollectionImpl::Initialize(const TArray<UZExtenderBaseInterface*>& extenders)
-{
-	if (!ensure(!bInitialized))
-	{
-		UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Collection is already initialized!"));
-		return;
-	}
-
-	bInitialized = true;
-
-	TSet<FGameplayTag> existingKeys;
-	for (const auto& extender : extenders)
-	{
-		if (!extender)
-		{
-			continue;
-		}
-
-		if (!ensure(extender->GetExtensionKey().IsValid()))
-		{
-			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extender [%s] has an invalid extension key!"), *extender->GetName());
-			continue;
-		}
-		
-		if (!ensure(!existingKeys.Contains(extender->GetExtensionKey())))
-		{
-			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extension key [%s] already exists!"), *extender->GetExtensionKey().ToString());
-			continue;
-		}
-
-#if DO_CHECK
-		if (!ensure(extender->HasAllFlags(RF_Transient)))
-		{
-			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extender [%s] is not transient!"), *extender->GetName());
-		}
-#endif
-
-		Extenders.Emplace(extender);
-	}
-}
-
 void UZExtenderCollectionImpl::Register(IZExtensionScope* scope)
 {
 	if (!scope)
@@ -97,5 +56,45 @@ void UZExtenderCollectionImpl::Unregister()
 	OwnerScope = nullptr;
 }
 
+void UZExtenderCollectionImpl::Initialize(const TArray<UZExtenderBaseInterface*>& extenders)
+{
+	if (!ensure(!bInitialized))
+	{
+		UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Collection is already initialized!"));
+		return;
+	}
+
+	bInitialized = true;
+
+	TSet<FGameplayTag> existingKeys;
+	for (const auto& extender : extenders)
+	{
+		if (!extender)
+		{
+			continue;
+		}
+
+		if (!ensure(extender->GetExtensionKey().IsValid()))
+		{
+			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extender [%s] has an invalid extension key!"), *extender->GetName());
+			continue;
+		}
+		
+		if (!ensure(!existingKeys.Contains(extender->GetExtensionKey())))
+		{
+			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extension key [%s] already exists!"), *extender->GetExtensionKey().ToString());
+			continue;
+		}
+
+#if DO_CHECK
+		if (!ensure(extender->HasAllFlags(RF_Transient)))
+		{
+			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extender [%s] is not transient!"), *extender->GetName());
+		}
+#endif
+
+		Extenders.Emplace(extender);
+	}
+}
 
 
