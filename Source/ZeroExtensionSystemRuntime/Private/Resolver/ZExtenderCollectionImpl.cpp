@@ -54,6 +54,7 @@ void UZExtenderCollectionImpl::Unregister()
 	}
 
 	OwnerScope = nullptr;
+	MarkAsGarbage();
 }
 
 void UZExtenderCollectionImpl::Initialize(const TArray<UZExtenderBaseInterface*>& extenders)

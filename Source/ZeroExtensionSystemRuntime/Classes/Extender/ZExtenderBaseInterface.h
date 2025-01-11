@@ -7,13 +7,29 @@
 #include "ZExtenderBaseInterface.generated.h"
 
 class IZExtensionScope;
+class UZExtenderBaseInterface;
+
+namespace ZES::ZExtenderBaseInterface_Private
+{
+	struct FZVisitor
+	{
+		friend class UZExtensionScopeImpl;
+	private:
+		FZVisitor(UZExtenderBaseInterface* extender) : Extender(extender){}
+		IZExtensionScope* GetOwnerScope() const;
+		bool IsRegistered() const;
+		void HandleRegister(IZExtensionScope* scope) const;
+		void HandleUnregister() const;
+		UZExtenderBaseInterface* Extender;
+	};
+}
 
 UCLASS(MinimalAPI, Abstract, DefaultToInstanced, EditInlineNew)
 class UZExtenderBaseInterface : public UObject
 {
 	GENERATED_BODY()
 
-	friend class UZExtensionScopeImpl;
+	friend ZES::ZExtenderBaseInterface_Private::FZVisitor;
 
 public:
 	bool TryExtend(UObject* extendee);

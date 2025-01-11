@@ -2,6 +2,30 @@
 
 #include "Extender/ZExtenderBaseInterface.h"
 
+#include "Scope/ZExtensionScope.h"
+
+IZExtensionScope* ZES::ZExtenderBaseInterface_Private::FZVisitor::GetOwnerScope() const
+{
+	return Extender->OwnerScope.GetInterface();
+}
+
+bool ZES::ZExtenderBaseInterface_Private::FZVisitor::IsRegistered() const
+{
+	return Extender->bRegistered;
+}
+
+void ZES::ZExtenderBaseInterface_Private::FZVisitor::HandleRegister(IZExtensionScope* scope) const
+{
+	Extender->bRegistered = true;
+	Extender->OwnerScope = scope->_getUObject();
+}
+
+void ZES::ZExtenderBaseInterface_Private::FZVisitor::HandleUnregister() const
+{
+	Extender->OwnerScope = nullptr;
+	Extender->MarkAsGarbage();
+}
+
 bool UZExtenderBaseInterface::TryExtend(UObject* extendee)
 {
 	if (!IsValidExtendee(extendee))

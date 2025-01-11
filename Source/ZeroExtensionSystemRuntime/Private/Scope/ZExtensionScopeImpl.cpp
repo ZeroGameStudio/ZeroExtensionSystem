@@ -41,7 +41,7 @@ void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterfa
 		return;
 	}
 
-	if (!ensure(!extender->bRegistered))
+	if (!ensure(!ZES::ZExtenderBaseInterface_Private::FZVisitor { extender }.IsRegistered()))
 	{
 		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZExtensionScopeImpl::ExtensionScope_RegisterExtender (%s)] Can't register extender [%s] because it is already registered to another scope!"), *GetName(), *extender->GetPathName());
 		return;
@@ -73,7 +73,7 @@ void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBaseInter
 		return;
 	}
 
-	if (!ensure(extender->OwnerScope == this))
+	if (!ensure(ZES::ZExtenderBaseInterface_Private::FZVisitor { extender }.GetOwnerScope() == this))
 	{
 		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZExtensionScopeImpl::ExtensionScope_UnregisterExtender (%s)] Can't unregister extender [%s] because it isn't registered to this scope!"), *GetName(), *extender->GetPathName());
 		return;
@@ -160,8 +160,7 @@ void UZExtensionScopeImpl::InternalRegisterExtender(UZExtenderBaseInterface* ext
 		return;
 	}
 
-	extender->bRegistered = true;
-	extender->OwnerScope = this;
+	ZES::ZExtenderBaseInterface_Private::FZVisitor { extender }.HandleRegister(this);
 
 	channel.ForeachExtendee([extender](UObject* extendee)
 	{
@@ -177,7 +176,7 @@ void UZExtensionScopeImpl::InternalUnregisterExtender(UZExtenderBaseInterface* e
 		return;
 	}
 
-	extender->OwnerScope = nullptr;
+	ZES::ZExtenderBaseInterface_Private::FZVisitor { extender }.HandleUnregister();
 	
 	channel.ForeachExtendee([extender](UObject* extendee)
 	{
