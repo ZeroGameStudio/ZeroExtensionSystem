@@ -4,7 +4,7 @@
 
 #include "ZExtendeeFilterBaseInterface.generated.h"
 
-UCLASS(Abstract, DefaultToInstanced, EditInlineNew, Const)
+UCLASS(Abstract, DefaultToInstanced, EditInlineNew, Const, BlueprintType)
 class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtendeeFilterBaseInterface : public UObject
 {
 	GENERATED_BODY()

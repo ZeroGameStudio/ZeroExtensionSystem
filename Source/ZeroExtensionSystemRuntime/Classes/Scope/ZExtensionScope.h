@@ -8,7 +8,7 @@
 
 class UZExtenderBaseInterface;
 
-UINTERFACE(MinimalAPI)
+UINTERFACE(MinimalAPI, BlueprintType, meta = (CannotImplementInterfaceInBlueprint))
 class UZExtensionScope : public UInterface
 {
 	GENERATED_BODY()

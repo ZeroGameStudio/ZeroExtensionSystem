@@ -8,7 +8,7 @@
 #include "Extender/ZIdentityExtender.h"
 #include "Scope/ZExtensionScope.h"
 
-void UZExtenderCollectionImpl::Register(IZExtensionScope* scope)
+void UZExtenderCollectionImpl::Register(TScriptInterface<IZExtensionScope> scope)
 {
 	if (!scope)
 	{

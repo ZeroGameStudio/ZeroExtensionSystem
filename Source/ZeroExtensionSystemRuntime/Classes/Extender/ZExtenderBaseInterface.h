@@ -24,7 +24,7 @@ namespace ZES::ZExtenderBaseInterface_Private
 	};
 }
 
-UCLASS(MinimalAPI, Abstract, DefaultToInstanced, EditInlineNew)
+UCLASS(MinimalAPI, Abstract, DefaultToInstanced, EditInlineNew, BlueprintType)
 class UZExtenderBaseInterface : public UObject
 {
 	GENERATED_BODY()
@@ -49,10 +49,10 @@ private:
 	static bool IsValidExtendee(const UObject* extendee);
 
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	TScriptInterface<IZExtensionScope> OwnerScope;
 
-	UPROPERTY(VisibleAnywhere)
+private:
 	bool bRegistered;
 	
 };

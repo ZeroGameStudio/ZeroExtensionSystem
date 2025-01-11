@@ -12,7 +12,7 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderCollectionImpl final : public UOb
 	GENERATED_BODY()
 
 public:
-	virtual void Register(IZExtensionScope* scope) override;
+	virtual void Register(TScriptInterface<IZExtensionScope> scope) override;
 	virtual void Unregister() override;
 	
 public:
