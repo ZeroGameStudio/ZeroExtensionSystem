@@ -5,6 +5,7 @@
 #include "GameplayTagContainer.h"
 #include "ZeroExtensionSystemRuntimeLogChannels.h"
 #include "Extender/ZExtenderBaseInterface.h"
+#include "Extender/ZIdentityExtender.h"
 #include "Scope/ZExtensionScope.h"
 
 void UZExtenderCollectionImpl::Register(IZExtensionScope* scope)
@@ -87,14 +88,16 @@ void UZExtenderCollectionImpl::Initialize(const TArray<UZExtenderBaseInterface*>
 			continue;
 		}
 
-#if DO_CHECK
-		if (!ensure(extender->HasAllFlags(RF_Transient)))
+		// Identity extender has no side effect so we can just skip it.
+		if (extender->IsA<UZIdentityExtender>())
 		{
-			UE_LOG(LogZeroExtensionSystemRuntime, Warning, TEXT("[UZExtenderCollectionImpl::Initialize] Extender [%s] is not transient!"), *extender->GetName());
+			continue;
 		}
-#endif
 
-		Extenders.Emplace(extender);
+		FObjectDuplicationParameters params { extender, this };
+		params.ApplyFlags = RF_Transient;
+		auto extenderInstance = CastChecked<UZExtenderBaseInterface>(StaticDuplicateObjectEx(params));
+		Extenders.Emplace(extenderInstance);
 	}
 }
 

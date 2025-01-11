@@ -6,6 +6,8 @@
 
 #include "ZExtenderResolver_Source.generated.h"
 
+class UZExtenderCollectionSource;
+
 UCLASS()
 class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderResolver_Source final : public UZExtenderResolverBaseInterface
 {
@@ -13,6 +15,10 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderResolver_Source final : public UZ
 
 public:
 	virtual TScriptInterface<IZExtenderCollection> Resolve(UObject* outer) const override;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Resolver")
+	TObjectPtr<UZExtenderCollectionSource> Source;
 	
 };
 

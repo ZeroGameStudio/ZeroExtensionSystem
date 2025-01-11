@@ -230,7 +230,8 @@ bool UZExtensionScopeImpl::FZChannel::AddExtender(UZExtenderBaseInterface* exten
 	if (ensure(!ExtenderLookup.Contains(extensionKey)))
 	{
 		ExtenderLookup.Emplace(extensionKey, extender);
-		ensure(Extenders.AddUnique(extender) == Extenders.Num() - 1);
+		ensure(!Extenders.Contains(extender));
+		Extenders.Emplace(extender);
 	}
 
 	UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZeroExtensionScopeImpl::FZChannel::AddExtender (%s)] Duplicated extension key [%s]"), *Name.ToString(), *extensionKey.ToString());
