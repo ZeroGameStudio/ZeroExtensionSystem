@@ -23,7 +23,7 @@ void UZExtensionScopeImpl::BeginDestroy()
 	UObject::BeginDestroy();
 }
 
-void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
+void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender)
 {
 	if (bClosed)
 	{
@@ -47,6 +47,14 @@ void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterfa
 		return;
 	}
 
+	FGameplayTag key = extender->GetExtensionKey();
+	if (RegisteredExtensionKeys.Contains(key))
+	{
+		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZExtensionScopeImpl::ExtensionScope_RegisterExtender (%s)] Duplicated extension key [%s]"), *GetName(), *key.ToString());
+		return;
+	}
+
+	FGameplayTag channel = extender->GetExtensionChannel();
 	if (!channel.IsValid())
 	{
 		channel = ZES::TAG_ExtensionChannel_Default;
@@ -55,7 +63,7 @@ void UZExtensionScopeImpl::ExtensionScope_RegisterExtender(UZExtenderBaseInterfa
 	InternalRegisterExtender(extender, channel);
 }
 
-void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
+void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender)
 {
 	if (bClosed)
 	{
@@ -79,6 +87,7 @@ void UZExtensionScopeImpl::ExtensionScope_UnregisterExtender(UZExtenderBaseInter
 		return;
 	}
 
+	FGameplayTag channel = extender->GetExtensionChannel();
 	if (!channel.IsValid())
 	{
 		channel = ZES::TAG_ExtensionChannel_Default;
@@ -159,6 +168,8 @@ void UZExtensionScopeImpl::InternalRegisterExtender(UZExtenderBaseInterface* ext
 	{
 		return;
 	}
+	
+	RegisteredExtensionKeys.Emplace(extender->GetExtensionKey());
 
 	ZES::ZExtenderBaseInterface_Private::FZVisitor { extender }.HandleRegister(this);
 
@@ -177,6 +188,8 @@ void UZExtensionScopeImpl::InternalUnregisterExtender(UZExtenderBaseInterface* e
 	}
 
 	ZES::ZExtenderBaseInterface_Private::FZVisitor { extender }.HandleUnregister();
+
+	ensure(RegisteredExtensionKeys.Remove(extender->GetExtensionKey()));
 	
 	channel.ForeachExtendee([extender](UObject* extendee)
 	{
@@ -226,15 +239,15 @@ UZExtensionScopeImpl::FZChannel& UZExtensionScopeImpl::GetChannel(FGameplayTag i
 
 bool UZExtensionScopeImpl::FZChannel::AddExtender(UZExtenderBaseInterface* extender)
 {
-	FGameplayTag extensionKey = extender->GetExtensionKey();
-	if (ensure(!ExtenderLookup.Contains(extensionKey)))
+	if (ensure(!ExtenderLookup.Contains(extender)))
 	{
-		ExtenderLookup.Emplace(extensionKey, extender);
+		ExtenderLookup.Emplace(extender);
 		ensure(!Extenders.Contains(extender));
 		Extenders.Emplace(extender);
+		return true;
 	}
 
-	UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZeroExtensionScopeImpl::FZChannel::AddExtender (%s)] Duplicated extension key [%s]"), *Name.ToString(), *extensionKey.ToString());
+	UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZeroExtensionScopeImpl::FZChannel::AddExtender (%s)] Duplicated extender [%s]"), *Name.ToString(), *extender->GetName());
 	return false;
 }
 
@@ -246,21 +259,12 @@ bool UZExtensionScopeImpl::FZChannel::RemoveExtender(UZExtenderBaseInterface* ex
 		return false;
 	}
 
-	FGameplayTag extensionKey = extender->GetExtensionKey();
-	TWeakObjectPtr<UZExtenderBaseInterface>* weakExtender = ExtenderLookup.Find(extensionKey);
-	if (!weakExtender)
+	if (!ensure(ExtenderLookup.Remove(extender)))
 	{
+		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZeroExtensionScopeImpl::FZChannel::RemoveExtender (%s)] Extender [%s] does not exist!"), *Name.ToString(), *extender->GetName());
 		return false;
 	}
 
-	UZExtenderBaseInterface* existingExtender = weakExtender->Get();
-	if (!ensure(existingExtender == extender))
-	{
-		UE_LOG(LogZeroExtensionSystemRuntime, Error, TEXT("[UZeroExtensionScopeImpl::FZChannel::RemoveExtender (%s)] Duplicated extension key [%s]"), *Name.ToString(), *extensionKey.ToString());
-		return false;
-	}
-
-	ExtenderLookup.Remove(extensionKey);
 	ensure(Extenders.Remove(extender));
 
 	return true;
@@ -272,7 +276,7 @@ bool UZExtensionScopeImpl::FZChannel::AddExtendee(UObject* extendee)
 	ExtendeeLookup.Emplace(extendee, &alreadyExists);
 	if (!alreadyExists)
 	{
-		ensure(Extendees.Emplace(extendee) == Extenders.Num() - 1);
+		Extendees.Emplace(extendee);
 		return true;
 	}
 

@@ -14,8 +14,8 @@ namespace ZES
 		
 		~FZDeferredExtensionScope();
 		
-		void RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag);
-		void UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag);
+		void RegisterExtender(UZExtenderBaseInterface* extender);
+		void UnregisterExtender(UZExtenderBaseInterface* extender);
 		
 		void RegisterExtendee(UObject* extendee, FGameplayTag channel = FGameplayTag::EmptyTag);
 		void UnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel = FGameplayTag::EmptyTag);
@@ -25,8 +25,8 @@ namespace ZES
 		void Close();
 
 	private:
-		void InternalRegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel);
-		void InternalUnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel);
+		void InternalRegisterExtender(UZExtenderBaseInterface* extender);
+		void InternalUnregisterExtender(UZExtenderBaseInterface* extender);
 		
 		void InternalRegisterExtendee(UObject* extendee, FGameplayTag channel);
 		void InternalUnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel);
@@ -42,10 +42,9 @@ namespace ZES
 		struct FZDeferredExtenderRegistration
 		{
 			TStrongObjectPtr<UZExtenderBaseInterface> Extender;
-			FGameplayTag Channel;
 			friend bool operator==(const FZDeferredExtenderRegistration& lhs, const FZDeferredExtenderRegistration& rhs)
 			{
-				return lhs.Extender == rhs.Extender && lhs.Channel == rhs.Channel;
+				return lhs.Extender == rhs.Extender;
 			}
 		};
 

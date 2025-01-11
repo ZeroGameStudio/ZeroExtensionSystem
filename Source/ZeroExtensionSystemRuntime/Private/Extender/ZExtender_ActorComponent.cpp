@@ -117,7 +117,7 @@ void UZExtender_ActorComponent::ApplyRequest(AActor* extendee, const FZExtender_
 	params.SetFlags = RF_Transient;
 	params.PropertyInitCallback = [&applyPostProcessors]
 	{
-		auto component = CastChecked<UActorComponent>(FObjectInitializer::Get().GetObj());
+		auto component = CastChecked<UActorComponent>(FUObjectThreadContext::Get().TopInitializerChecked().GetObj());
 		applyPostProcessors(component, EZExtender_ActorComponentPostProcessorRunningGroup::PostInitProperties);
 	};
 	

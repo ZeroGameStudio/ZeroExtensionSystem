@@ -34,8 +34,9 @@ class UZExtenderBaseInterface : public UObject
 public:
 	bool TryExtend(UObject* extendee);
 	bool TryRevert(UObject* extendee, bool destroying);
-
+	
 	virtual FGameplayTag GetExtensionKey() const { PURE_VIRTUAL(UZeroExtenderBase::GetExtensionKey); return {}; }
+	virtual FGameplayTag GetExtensionChannel() const { PURE_VIRTUAL(UZeroExtenderBase::GetExtensionChannel); return {}; }
 
 protected:
 	virtual bool Extend(UObject* extendee) { PURE_VIRTUAL(UZeroExtenderBase::Extend); return false; }

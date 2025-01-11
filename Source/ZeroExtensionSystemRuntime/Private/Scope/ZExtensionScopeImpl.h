@@ -18,8 +18,8 @@ private:
 	virtual void BeginDestroy() override;
 	
 	// IZeroExtensionScope
-	virtual void ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag) override;
-	virtual void ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag) override;
+	virtual void ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender) override;
+	virtual void ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender) override;
 
 	virtual void ExtensionScope_RegisterExtendee(UObject* extendee, FGameplayTag channel = FGameplayTag::EmptyTag) override;
 	virtual void ExtensionScope_UnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel = FGameplayTag::EmptyTag) override;
@@ -54,7 +54,7 @@ private:
 		FName Name;
 		TArray<TObjectPtr<UZExtenderBaseInterface>> Extenders;
 		TArray<FWeakObjectPtr> Extendees;
-		TMap<FGameplayTag, TWeakObjectPtr<UZExtenderBaseInterface>> ExtenderLookup;
+		TSet<TObjectKey<UZExtenderBaseInterface>> ExtenderLookup;
 		TSet<FObjectKey> ExtendeeLookup;
 		bool bExtendersLocked = false;
 		bool bExtendeesLocked = false;
@@ -66,6 +66,7 @@ private:
 private:
 	FName Name;
 	TMap<FGameplayTag, TUniquePtr<FZChannel>> Registry;
+	TSet<FGameplayTag> RegisteredExtensionKeys;
 
 	bool bClosed = false;
 	

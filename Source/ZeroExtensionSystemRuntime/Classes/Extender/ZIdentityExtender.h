@@ -13,6 +13,7 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API UZIdentityExtender final : public UZExtende
 
 public:
 	virtual FGameplayTag GetExtensionKey() const override { return ExtensionKey; }
+	virtual FGameplayTag GetExtensionChannel() const override { return {}; }
 
 protected:
 	virtual bool Extend(UObject* extendee) override { return true;}

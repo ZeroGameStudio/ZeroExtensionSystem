@@ -22,8 +22,8 @@ public:
 	static TScriptInterface<IZExtensionScope> Create(UObject* outer, FName name);
 
 public:
-	virtual void ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag) = 0;
-	virtual void ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel = FGameplayTag::EmptyTag) = 0;
+	virtual void ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender) = 0;
+	virtual void ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender) = 0;
 		
 	virtual void ExtensionScope_RegisterExtendee(UObject* extendee, FGameplayTag channel = FGameplayTag::EmptyTag) = 0;
 	virtual void ExtensionScope_UnregisterExtendee(UObject* extendee, bool destroying, FGameplayTag channel = FGameplayTag::EmptyTag) = 0;

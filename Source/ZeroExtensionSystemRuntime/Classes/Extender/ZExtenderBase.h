@@ -15,6 +15,7 @@ class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderBase : public UZExtenderBaseInter
 
 public:
 	virtual FGameplayTag GetExtensionKey() const override final { return ExtensionKey; }
+	virtual FGameplayTag GetExtensionChannel() const override { return ExtensionChannel; }
 
 protected:
 	virtual bool InternalCanExtend(UObject* extendee) const { return true; }
@@ -25,6 +26,9 @@ private:
 private:
 	UPROPERTY(EditAnywhere, Category = "Extender")
 	FGameplayTag ExtensionKey;
+
+	UPROPERTY(EditAnywhere, Category = "Extender")
+	FGameplayTag ExtensionChannel;
 	
 	UPROPERTY(EditAnywhere, Category = "Filter")
 	TObjectPtr<UZExtendeeFilterBaseInterface> Filter;

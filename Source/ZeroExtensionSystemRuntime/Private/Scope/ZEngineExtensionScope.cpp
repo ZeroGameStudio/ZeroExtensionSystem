@@ -4,14 +4,14 @@
 
 #include "ZeroExtensionSystemRuntimeLogChannels.h"
 
-void UZEngineExtensionScope::ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
+void UZEngineExtensionScope::ExtensionScope_RegisterExtender(UZExtenderBaseInterface* extender)
 {
-	ExtensionScope.RegisterExtender(extender, channel);
+	ExtensionScope.RegisterExtender(extender);
 }
 
-void UZEngineExtensionScope::ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender, FGameplayTag channel)
+void UZEngineExtensionScope::ExtensionScope_UnregisterExtender(UZExtenderBaseInterface* extender)
 {
-	ExtensionScope.UnregisterExtender(extender, channel);
+	ExtensionScope.UnregisterExtender(extender);
 }
 
 void UZEngineExtensionScope::ExtensionScope_RegisterExtendee(UObject* extendee, FGameplayTag channel)
