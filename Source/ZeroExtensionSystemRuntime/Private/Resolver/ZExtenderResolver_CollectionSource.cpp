@@ -1,8 +1,8 @@
 ﻿// Copyright Zero Games. All Rights Reserved.
 
-#include "ZExtenderResolver_CollectionSource.h"
+#include "Resolver/ZExtenderResolver_CollectionSource.h"
 
-#include "ZExtenderCollectionImpl.h"
+#include "Resolver/ZExtenderCollectionImpl.h"
 #include "Extender/ZExtenderBaseInterface.h"
 #include "Resolver/ZExtenderCollectionSourceVisitor.h"
 
