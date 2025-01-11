@@ -1,12 +1,12 @@
 ﻿// Copyright Zero Games. All Rights Reserved.
 
-#include "ZExtenderResolver_Source.h"
+#include "ZExtenderResolver_CollectionSource.h"
 
 #include "ZExtenderCollectionImpl.h"
 #include "Extender/ZExtenderBaseInterface.h"
 #include "Resolver/ZExtenderCollectionSourceVisitor.h"
 
-TScriptInterface<IZExtenderCollection> UZExtenderResolver_Source::Resolve(UObject* outer) const
+TScriptInterface<IZExtenderCollection> UZExtenderResolver_CollectionSource::Resolve(UObject* outer) const
 {
 	TArray<UZExtenderBaseInterface*> extenders;
 	if (!ensureAlways(ZES::FZExtenderCollectionSourceVisitor { Source }.LootExtenders(extenders) == ZES::EZExtenderCollectionSourceLootResult::Success))

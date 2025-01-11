@@ -4,12 +4,12 @@
 
 #include "ZExtenderResolverBaseInterface.h"
 
-#include "ZExtenderResolver_Source.generated.h"
+#include "ZExtenderResolver_CollectionSource.generated.h"
 
 class UZExtenderCollectionSource;
 
 UCLASS()
-class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderResolver_Source final : public UZExtenderResolverBaseInterface
+class ZEROEXTENSIONSYSTEMRUNTIME_API UZExtenderResolver_CollectionSource final : public UZExtenderResolverBaseInterface
 {
 	GENERATED_BODY()
 

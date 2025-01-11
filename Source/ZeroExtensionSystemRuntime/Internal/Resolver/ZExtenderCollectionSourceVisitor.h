@@ -15,7 +15,7 @@ namespace ZES
 		SourceUnavailable,
 	};
 	
-	class FZExtenderCollectionSourceVisitor
+	class ZEROEXTENSIONSYSTEMRUNTIME_API FZExtenderCollectionSourceVisitor
 	{
 
 	public:
