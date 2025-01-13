@@ -28,7 +28,7 @@ struct FZExtender_ActorComponentRequest
 	FName ComponentName;
 
 	UPROPERTY(EditAnywhere)
-	EZExtender_ActorComponentRequestCreationCondition CreationCondition;
+	EZExtender_ActorComponentRequestCreationCondition CreationCondition = EZExtender_ActorComponentRequestCreationCondition::SkipIfExists;
 
 	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UZExtender_ActorComponentPostProcessorBaseInterface>> PostProcessors;
