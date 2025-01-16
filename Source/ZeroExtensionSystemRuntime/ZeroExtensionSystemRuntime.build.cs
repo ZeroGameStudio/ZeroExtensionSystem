@@ -37,6 +37,7 @@ public class ZeroExtensionSystemRuntime : ModuleRules
 				"CoreUObject",
 				"GameplayTags",
 				"Engine",
+				"DeveloperSettings",
 			}
 		);
 		
