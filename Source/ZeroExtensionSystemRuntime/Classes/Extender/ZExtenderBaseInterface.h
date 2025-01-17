@@ -8,12 +8,13 @@
 
 class IZExtensionScope;
 class UZExtenderBaseInterface;
+class UZExtensionScopeImpl;
 
 namespace ZES::ZExtenderBaseInterface_Private
 {
 	struct FZVisitor
 	{
-		friend class UZExtensionScopeImpl;
+		friend UZExtensionScopeImpl;
 	private:
 		FZVisitor(UZExtenderBaseInterface* extender) : Extender(extender){}
 		IZExtensionScope* GetOwnerScope() const;
