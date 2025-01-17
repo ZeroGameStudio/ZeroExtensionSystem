@@ -3,6 +3,7 @@
 #pragma once
 
 #include "ZExtenderBase.h"
+#include "ZExtender_ActorComponentPostProcessorBaseInterface.h"
 
 #include "ZExtender_ActorComponent.generated.h"
 
@@ -46,7 +47,7 @@ private:
 	virtual bool InternalCanExtend(UObject* extendee) const override;
 
 private:
-	void ApplyRequest(AActor* extendee, const FZExtender_ActorComponentRequest& request);
+	void ApplyRequest(AActor* extendee, const FZExtender_ActorComponentRequest& request, TArray<TTuple<TWeakObjectPtr<UActorComponent>, const FZExtender_ActorComponentRequest*>>& pendingPostProcessors);
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Extender")

@@ -3,14 +3,50 @@
 #include "Extender/ZExtender_ActorComponent.h"
 
 #include "ZeroExtensionSystemRuntimeLogChannels.h"
-#include "Extender/ZExtender_ActorComponentPostProcessorBaseInterface.h"
+
+namespace ZES::ZExtender_ActorComponent_Private
+{
+	static void ApplyPostProcessors(UActorComponent* component, const FZExtender_ActorComponentRequest& request, EZExtender_ActorComponentPostProcessorRunningGroup runningGroup)
+	{
+		for (const auto& postProcessor : request.PostProcessors)
+		{
+			if (postProcessor->GetRunningGroup() == runningGroup)
+			{
+				postProcessor->Apply(component);
+			}
+		}
+	}
+}
 
 bool UZExtender_ActorComponent::Extend(UObject* extendee)
 {
 	auto actor = CastChecked<AActor>(extendee);
+	TArray<TTuple<TWeakObjectPtr<UActorComponent>, const FZExtender_ActorComponentRequest*>> pendingPostProcessors;
+
+	// IMPORTANT: Assume request array is not changed in this function.
 	for (const auto& request : Requests)
 	{
-		ApplyRequest(actor, request);
+		// Assume component constructor doesn't kill the actor.
+		ApplyRequest(actor, request, pendingPostProcessors);
+	}
+
+	// Initialize/Register after all components of this extender (treat as a group) has been created so components can set up dependencies with each other.
+	for (const auto& pendingPostProcessor : pendingPostProcessors)
+	{
+		if (UActorComponent* component = pendingPostProcessor.Get<0>().Get())
+		{
+			// Always register regardless of bAutoRegister.
+			component->RegisterComponent();
+
+			// RegisterComponent() can kill the actor.
+			if (actor->IsActorBeingDestroyed() || actor->HasAllFlags(RF_MirroredGarbage))
+			{
+				return false;
+			}
+
+			// Assume post processor doesn't kill the actor.
+			ZES::ZExtender_ActorComponent_Private::ApplyPostProcessors(component, *pendingPostProcessor.Get<1>(), EZExtender_ActorComponentPostProcessorRunningGroup::PostRegisterToWorld);
+		}
 	}
 
 	return true;
@@ -58,7 +94,7 @@ bool UZExtender_ActorComponent::InternalCanExtend(UObject* extendee) const
 	return extendee->IsA<AActor>();
 }
 
-void UZExtender_ActorComponent::ApplyRequest(AActor* extendee, const FZExtender_ActorComponentRequest& request)
+void UZExtender_ActorComponent::ApplyRequest(AActor* extendee, const FZExtender_ActorComponentRequest& request, TArray<TTuple<TWeakObjectPtr<UActorComponent>, const FZExtender_ActorComponentRequest*>>& pendingPostProcessors)
 {
 	bool shouldCreate = true;
 	switch (request.CreationCondition)
@@ -100,25 +136,14 @@ void UZExtender_ActorComponent::ApplyRequest(AActor* extendee, const FZExtender_
 		}
 	}
 
-	auto applyPostProcessors = [&request](UActorComponent* component, EZExtender_ActorComponentPostProcessorRunningGroup runningGroup)
-	{
-		for (const auto& postProcessor : request.PostProcessors)
-		{
-			if (postProcessor->GetRunningGroup() == runningGroup)
-			{
-				postProcessor->Apply(component);
-			}
-		}
-	};
-	
 	FStaticConstructObjectParameters params { request.ComponentClass };
 	params.Outer = extendee;
 	params.Name = request.ComponentName;
 	params.SetFlags = RF_Transient;
-	params.PropertyInitCallback = [&applyPostProcessors]
+	params.PropertyInitCallback = [&request]
 	{
 		auto component = CastChecked<UActorComponent>(FUObjectThreadContext::Get().TopInitializerChecked().GetObj());
-		applyPostProcessors(component, EZExtender_ActorComponentPostProcessorRunningGroup::PostInitProperties);
+		ZES::ZExtender_ActorComponent_Private::ApplyPostProcessors(component, request, EZExtender_ActorComponentPostProcessorRunningGroup::PostInitProperties);
 	};
 	
 	auto component = CastChecked<UActorComponent>(StaticConstructObject_Internal(params));
@@ -138,14 +163,9 @@ void UZExtender_ActorComponent::ApplyRequest(AActor* extendee, const FZExtender_
 		}
 	}
 
-	applyPostProcessors(component, EZExtender_ActorComponentPostProcessorRunningGroup::PreRegisterToWorld);
+	ZES::ZExtender_ActorComponent_Private::ApplyPostProcessors(component, request, EZExtender_ActorComponentPostProcessorRunningGroup::PreRegisterToWorld);
 
-	if (component->bAutoRegister)
-	{
-		component->RegisterComponent();
-	}
-
-	applyPostProcessors(component, EZExtender_ActorComponentPostProcessorRunningGroup::PostRegisterToWorld);
+	pendingPostProcessors.Emplace(TTuple<TWeakObjectPtr<UActorComponent>, const FZExtender_ActorComponentRequest*> { component, &request });
 }
 
 
