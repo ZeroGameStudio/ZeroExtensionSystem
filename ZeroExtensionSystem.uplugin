@@ -3,7 +3,7 @@
 	"Version": 1,
 	"VersionName": "0.1.0",
 	"FriendlyName": "Zero Extension System",
-	"Description": "An IoC container for Unreal Engine, enhanced version of ModularGameplay.",
+	"Description": "A dynamic object extension system for Unreal Engine, enhanced version of ModularGameplay.",
 	"Category": "Gameplay",
 	"CreatedBy": "Zero Games",
 	"CreatedByURL": "https://github.com/ZeroGameStudio/ZeroExtensionSystem",
