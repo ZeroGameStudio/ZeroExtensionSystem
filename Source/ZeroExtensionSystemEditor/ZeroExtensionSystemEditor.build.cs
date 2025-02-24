@@ -6,7 +6,7 @@ public class ZeroExtensionSystemEditor : ModuleRules
 {
 	public ZeroExtensionSystemEditor(ReadOnlyTargetRules Target) : base(Target)
 	{
-		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
+		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		
 		PublicIncludePaths.AddRange
 		(
